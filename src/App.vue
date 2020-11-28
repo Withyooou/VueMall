@@ -5,13 +5,13 @@
 </template>
 
 <script>
-
-export default {
-  name: 'app',
-  components: {}
-}
+  export default {
+    name: 'app',
+    components: {}
+  }
 </script>
 
 <style lang="less">
+  @import url('assets/css/base.css');
 </style>
 
