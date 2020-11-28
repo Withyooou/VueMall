@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <h2>试试水</h2>
   </div>
 </template>
 
@@ -7,11 +8,10 @@
 
 export default {
   name: 'app',
-  components: {
-    
-  }
+  components: {}
 }
 </script>
 
 <style lang="less">
 </style>
+
