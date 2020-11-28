@@ -1,17 +1,22 @@
 <template>
   <div id="app">
-    <h2>试试水</h2>
+    <router-view/>
+    <main-tab-bar/>
   </div>
 </template>
 
 <script>
+  import MainTabBar from 'components/content/maintabbar/MainTabBar'
+
   export default {
     name: 'app',
-    components: {}
+    components: {
+      MainTabBar
+    }
   }
 </script>
 
-<style lang="less">
+<style>
   @import url('assets/css/base.css');
 </style>
 
