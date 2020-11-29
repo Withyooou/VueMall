@@ -46,7 +46,7 @@ export default {
 
 <style scoped>
   .tab-bar-item {
-    flex: auto;    /* 弹性元素的属性, 相当于 flex: 1 1 auto(可增可减) */
+    flex: 1;   
     font-size: 14px;
     text-align: center;
     height: 49px;
