@@ -1,5 +1,9 @@
 @import "./normalize.css";  
 
+html,
+body {
+  height: 100%;
+}
 /* 
   :root -> 获取根元素html 
   诸如 --color-text 是定义变量, 可通过var()进行调用
