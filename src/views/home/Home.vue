@@ -4,13 +4,15 @@
     <home-swiper :banners="banners"/>
     <recommend-view :recommends="recommends"/>
     <feature-view/>
-    <tab-control :titles="['流行','新款','精选']" class="tab-control"/>
+    <tab-control :titles="['流行','新款','精选']" class="tab-control" @tabControl="tabControl"/>
+    <goods-list :goods="goods[currentType].list"/>
   </div>
 </template>
 
 <script>
 import NavBar from 'components/common/navbar/NavBar'
 import TabControl from 'components/content/tabcontrol/TabControl'
+import GoodsList from 'components/content/goods/GoodsList'
 
 import HomeSwiper from './childComps/HomeSwiper'
 import RecommendView from './childComps/RecommendView'
@@ -25,7 +27,8 @@ export default {
     TabControl,
     HomeSwiper,
     RecommendView,
-    FeatureView
+    FeatureView,
+    GoodsList
   },
   data() {
     return {
@@ -35,7 +38,8 @@ export default {
         'pop': {page: 0, list: []},
         'new': {page: 0, list: []},
         'sell': {page: 0, list: []}
-      }
+      },
+      currentType: 'pop'
     }
   },
   created() {
@@ -47,6 +51,25 @@ export default {
     this.getHomeGoods('sell')
   },
   methods: {
+    /**
+     * 事件监听相关方法
+     */
+    tabControl(index) {
+      switch (index) {
+        case 0:
+          this.currentType = 'pop'
+          break
+        case 1:
+          this.currentType = 'new'
+          break
+        case 2:
+          this.currentType = 'sell'
+          break
+      }
+    },
+    /**
+     * 网络请求相关方法
+     */
     getHomeMultidata() {
       getHomeMultidata().then(res => {
         // console.log(res);
@@ -57,7 +80,7 @@ export default {
       })
     },
     getHomeGoods(type) {
-      const page = this.goods[type].page + 1
+      const page = this.goods[type].page + 1;
       getHomeGoods(type, page).then(res => {
         console.log(res)
         this.goods[type].list.push(...res.data.list)  // ES6扩展运算符
@@ -85,5 +108,6 @@ export default {
   .tab-control {
     position: sticky;
     top: 44px;
+    z-index: 9;
   }
 </style>
