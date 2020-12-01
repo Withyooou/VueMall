@@ -1,11 +1,23 @@
 <template>
   <div id="home">
     <nav-bar class="home-nav"><template v-slot:center>购物街</template></nav-bar>
-    <home-swiper :banners="banners"/>
-    <recommend-view :recommends="recommends"/>
-    <feature-view/>
-    <tab-control :titles="['流行','新款','精选']" class="tab-control" @tabControl="tabControl"/>
-    <goods-list :goods="goods[currentType].list"/>
+
+    <scroll class="content" 
+            ref="scroll"
+            :probe-type="3" 
+            :pull-up-load="true"
+            @scroll="contentScroll"
+            @pullingUp="loadMore">
+      <home-swiper :banners="banners"/>
+      <recommend-view :recommends="recommends"/>
+      <feature-view/>
+      <tab-control :titles="['流行','新款','精选']" class="tab-control" @tabControl="tabControl"/>
+      <goods-list :goods="showGoods"/>
+    </scroll>
+    <!-- 监听一个组件的原生事件时,必须给对应的事件加上.native修饰符才能正常进行监听 -->
+    <back-top @click.native="backTop" class="back-top" v-show="showBackTop">
+      <img src="~assets/img/common/top.png" alt="">
+    </back-top>
   </div>
 </template>
 
@@ -13,6 +25,8 @@
 import NavBar from 'components/common/navbar/NavBar'
 import TabControl from 'components/content/tabcontrol/TabControl'
 import GoodsList from 'components/content/goods/GoodsList'
+import Scroll from 'components/common/scroll/Scroll'
+import BackTop from 'components/content/backtop/BackTop'
 
 import HomeSwiper from './childComps/HomeSwiper'
 import RecommendView from './childComps/RecommendView'
@@ -28,7 +42,9 @@ export default {
     HomeSwiper,
     RecommendView,
     FeatureView,
-    GoodsList
+    GoodsList,
+    Scroll,
+    BackTop
   },
   data() {
     return {
@@ -39,7 +55,8 @@ export default {
         'new': {page: 0, list: []},
         'sell': {page: 0, list: []}
       },
-      currentType: 'pop'
+      currentType: 'pop',
+      showBackTop: false
     }
   },
   created() {
@@ -49,6 +66,11 @@ export default {
     this.getHomeGoods('pop')
     this.getHomeGoods('new')
     this.getHomeGoods('sell')
+  },
+  computed: {
+    showGoods() {
+      return this.goods[this.currentType].list
+    }
   },
   methods: {
     /**
@@ -66,6 +88,15 @@ export default {
           this.currentType = 'sell'
           break
       }
+    },
+    backTop() {
+      this.$refs.scroll.scrollTo(0, 0, 500)
+    },
+    contentScroll(position) {
+      this.showBackTop = (-position.y) > 1000
+    },
+    loadMore() {
+      console.log('上拉加载更多')
     },
     /**
      * 网络请求相关方法
@@ -94,6 +125,7 @@ export default {
 <style scoped>
   #home {
     padding-top: 44px;
+    position: relative;
     height: 2500px;
   }
   .home-nav {
@@ -109,5 +141,17 @@ export default {
     position: sticky;
     top: 44px;
     z-index: 9;
+  }
+  .content {
+    position: absolute;
+    top: 44px;
+    bottom: 49px;
+    left: 0;
+    right: 0;
+  }
+  .back-top {
+    position: fixed;
+    right: 10px;
+    bottom: 60px;
   }
 </style>
