@@ -1,7 +1,11 @@
 <template>
   <div id="home">
     <!-- 顶部nav-bar -->
-    <nav-bar class="home-nav"><template v-slot:center>购物街</template></nav-bar>
+    <nav-bar class="home-nav">
+      <template v-slot:center>
+        <div>购物街</div> 
+      </template>
+    </nav-bar>
     <!-- tab-control横向导航 -->
     <tab-control :titles="['流行','新款','精选']"
                   ref="tabControlOuter"

@@ -6,6 +6,7 @@ const Home = () => import('views/home/Home')
 const Category = () => import('views/category/Category')
 const Profile = () => import('views/profile/Profile')
 const Shopcar = () => import('views/shopcar/Shopcar')
+const Detail = () => import('views/detail/Detail')
 
 Vue.use(VueRouter)
 
@@ -41,6 +42,13 @@ const routes = [
     component: Shopcar,
     meta: {
       title: '购物车'
+    }
+  },
+  {
+    path: '/detail/:iid',
+    component: Detail,
+    meta: {
+      title: '商品详情'
     }
   }
 ]

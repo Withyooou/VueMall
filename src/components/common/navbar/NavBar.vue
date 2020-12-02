@@ -24,8 +24,14 @@ export default {
   .left,
   .right {
     width: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .center {
     flex: 1;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-around;
   }
 </style>
