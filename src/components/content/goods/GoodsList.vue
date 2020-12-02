@@ -27,7 +27,6 @@ export default {
   .goods {
     display: flex;
     flex-flow: row wrap;
-    justify-content: space-around;
-    padding: 2px;
+    justify-content: space-evenly;
   }
 </style>

@@ -1,19 +1,31 @@
 <template>
   <div id="home">
+    <!-- 顶部nav-bar -->
     <nav-bar class="home-nav"><template v-slot:center>购物街</template></nav-bar>
-
+    <!-- tab-control横向导航 -->
+    <tab-control :titles="['流行','新款','精选']"
+                  ref="tabControlOuter"
+                  class="tab-control"
+                  @tabControl="tabControl" 
+                  v-show="isTabFixed"/>
     <scroll class="content" 
             ref="scroll"
             :probe-type="3" 
             :pull-up-load="true"
             @scroll="contentScroll"
             @pullingUp="loadMore">
-      <home-swiper :banners="banners"/>
+      <!-- 轮播图 -->
+      <home-swiper :banners="banners" @swiperImageLoad="swiperImageLoad"/>
+      <!-- 推荐模块(小圆圈) -->
       <recommend-view :recommends="recommends"/>
+      <!-- 本周流行(大图) -->
       <feature-view/>
-      <tab-control :titles="['流行','新款','精选']" class="tab-control" @tabControl="tabControl"/>
+      <!-- tab-control横向导航 -->
+      <tab-control :titles="['流行','新款','精选']" @tabControl="tabControl" ref="tabControlInner"/>
+      <!-- 商品列表 -->
       <goods-list :goods="showGoods"/>
     </scroll>
+
     <!-- 监听一个组件的原生事件时,必须给对应的事件加上.native修饰符才能正常进行监听 -->
     <back-top @click.native="backTop" class="back-top" v-show="showBackTop">
       <img src="~assets/img/common/top.png" alt="">
@@ -33,6 +45,7 @@ import RecommendView from './childComps/RecommendView'
 import FeatureView from './childComps/FeatureView'
 
 import { getHomeMultidata, getHomeGoods } from 'network/home'
+import { debounce } from 'common/utils'
 
 export default {
   name: "Home",
@@ -56,7 +69,9 @@ export default {
         'sell': {page: 0, list: []}
       },
       currentType: 'pop',
-      showBackTop: false
+      showBackTop: false,
+      tabOffsetTop: 0,
+      isTabFixed: false
     }
   },
   created() {
@@ -66,6 +81,13 @@ export default {
     this.getHomeGoods('pop')
     this.getHomeGoods('new')
     this.getHomeGoods('sell')
+  },
+  mounted() {
+    // 监听GoodsListItem中图片加载完成
+    const refresh = debounce(this.$refs.scroll.refresh, 50)
+    this.$bus.$on('itemImageLoad', () => {
+      refresh()
+    })
   },
   computed: {
     showGoods() {
@@ -88,15 +110,23 @@ export default {
           this.currentType = 'sell'
           break
       }
+      this.$refs.tabControlInner.currentIndex = index;
+      this.$refs.tabControlOuter.currentIndex = index;
     },
     backTop() {
       this.$refs.scroll.scrollTo(0, 0, 500)
     },
     contentScroll(position) {
+      // 1.判断backTop是否显示
       this.showBackTop = (-position.y) > 1000
+      // 2.决定tabControl是否吸顶
+      this.isTabFixed = (-position.y) > this.tabOffsetTop
     },
     loadMore() {
-      console.log('上拉加载更多')
+      this.getHomeGoods(this.currentType)
+    },
+    swiperImageLoad() {
+      this.tabOffsetTop = this.$refs.tabControlInner.$el.offsetTop
     },
     /**
      * 网络请求相关方法
@@ -113,9 +143,11 @@ export default {
     getHomeGoods(type) {
       const page = this.goods[type].page + 1;
       getHomeGoods(type, page).then(res => {
-        console.log(res)
+        // console.log(res)
         this.goods[type].list.push(...res.data.list)  // ES6扩展运算符
         this.goods[type].page ++
+        // 完成上拉加载更多
+        this.$refs.scroll.finishPullUp()
       })
     }
   }
@@ -124,23 +156,18 @@ export default {
 
 <style scoped>
   #home {
-    padding-top: 44px;
+    height: 100vh;
     position: relative;
-    height: 2500px;
   }
   .home-nav {
     background-color: var(--color-tint);
     color: #fff;
-    position: fixed;
+    /* 在使用原生滚动时,为了让导航栏不跟随滚动才需要如下设置,运用better-scroll则不需要 */
+    /* position: fixed;
     right: 0;
     left: 0;
     top: 0;
-    z-index: 9;
-  }
-  .tab-control {
-    position: sticky;
-    top: 44px;
-    z-index: 9;
+    z-index: 9; */
   }
   .content {
     position: absolute;
@@ -148,10 +175,15 @@ export default {
     bottom: 49px;
     left: 0;
     right: 0;
+    overflow: hidden;
   }
   .back-top {
     position: fixed;
     right: 10px;
     bottom: 60px;
+  }
+  .tab-control {
+    position: relative;
+    z-index: 9;
   }
 </style>
