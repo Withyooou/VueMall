@@ -65,6 +65,9 @@ export default {
       // 防止出现this.scroll还未创建完毕,Home组件就调用refresh()方法,这种情况会报错
       this.scroll && this.scroll.refresh()
       console.log('调用refresh')
+    },
+    getScrollY() {
+      return this.scroll ? this.scroll.y : 0
     }
   }
 }

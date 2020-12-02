@@ -71,7 +71,8 @@ export default {
       currentType: 'pop',
       showBackTop: false,
       tabOffsetTop: 0,
-      isTabFixed: false
+      isTabFixed: false,
+      saveY: 0
     }
   },
   created() {
@@ -110,6 +111,7 @@ export default {
           this.currentType = 'sell'
           break
       }
+      // 统一两个tab-control的高亮位置
       this.$refs.tabControlInner.currentIndex = index;
       this.$refs.tabControlOuter.currentIndex = index;
     },
@@ -126,6 +128,8 @@ export default {
       this.getHomeGoods(this.currentType)
     },
     swiperImageLoad() {
+      // 直接mounted()里获取tab-control的offsetTop的值不准确,因为图片未加载完会导致sffsetTop的值偏小
+      // 而轮播图的图片加载速度最慢,因此我们只要在轮播图的图片获取到之后再去计算offsetTop,得到的值就会相对准确
       this.tabOffsetTop = this.$refs.tabControlInner.$el.offsetTop
     },
     /**
@@ -150,6 +154,15 @@ export default {
         this.$refs.scroll.finishPullUp()
       })
     }
+  },
+  // 再次切回首页时保持离开时的位置
+  activated() {
+    this.$refs.scroll.scrollTo(0, this.saveY, 0)
+    this.$refs.scroll.refresh()
+  },
+  // 记录首页商品离开时的位置
+  deactivated() {
+    this.saveY = this.$refs.scroll.getScrollY()
   }
 }
 </script>
