@@ -1,5 +1,5 @@
 <template>
-  <!-- 对象keys的长度不为0,证明不是空对象 -->
+  <!-- 对象keys的长度不为0,证明不是空对象,此时才进行页面渲染 -->
   <div v-if="Object.keys(goods).length !== 0" class="base-info">
     <div class="info-title">{{goods.title}}</div>
     <div class="info-price">
@@ -13,6 +13,7 @@
       <span>{{goods.services[goods.services.length-1].name}}</span>
     </div>
     <div class="info-service">
+      <!-- v-for="index in 5",实际上index会遍历 1 ~ 5 -->
       <span class="info-service-item" v-for="index in goods.services.length-1" :key="index">
         <img :src="goods.services[index-1].icon">
         <span>{{goods.services[index-1].name}}</span>

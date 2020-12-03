@@ -24,7 +24,7 @@ export default {
       default: 0    // 默认是0,不监听滚动
     },
     pullUpLoad:{
-      type:Boolean,
+      type: Boolean,
       default: false
     }
   },
@@ -57,7 +57,7 @@ export default {
     },
     // 当上拉加载事件完成后,调用此方法,才可以进行下一次加载更多
     finishPullUp() {
-      console.log('滚动到底部,已加载更多数据!')
+      console.log('已加载更多数据!')
       this.scroll && this.scroll.finishPullUp()
     },
     refresh() {

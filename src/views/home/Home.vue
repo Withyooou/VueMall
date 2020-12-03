@@ -12,6 +12,7 @@
                   class="tab-control"
                   @tabControl="tabControl" 
                   v-show="isTabFixed"/>
+
     <scroll class="content" 
             ref="scroll"
             :probe-type="3" 
