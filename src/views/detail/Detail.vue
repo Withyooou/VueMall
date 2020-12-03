@@ -9,6 +9,8 @@
       <detail-shop-info :shop="shop"/>
       <detail-goods-info :detailInfo="detailInfo" @imageLoad="imageLoad"/>
       <detail-param-info :paramInfo="paramInfo"/>
+      <detail-comment-info :commentInfo="commentInfo"/>
+      <goods-list :goods="recommendList"/>
     </scroll>
   </div>
 </template>
@@ -21,11 +23,16 @@ import DetailBaseInfo from './childComps/DetailBaseInfo'
 import DetailShopInfo from './childComps/DetailShopInfo'
 import DetailGoodsInfo from './childComps/DetailGoodsInfo'
 import DetailParamInfo from './childComps/DetailParamInfo'
+import DetailCommentInfo from './childComps/DetailCommentInfo'
+import GoodsList from 'components/content/goods/GoodsList'
 
-import { getDetail, Goods, Shop, GoodsParam } from 'network/detail'
+import { getDetail, getRecommend, Goods, Shop, GoodsParam } from 'network/detail'
+import { debounce } from 'common/utils'
+import { itemLinstenerMixin } from 'common/mixin'
 
 export default {
   name: "Detail",
+  mixins: [itemLinstenerMixin],
   components: { 
     Scroll,
     DetailNavBar,
@@ -33,7 +40,9 @@ export default {
     DetailBaseInfo,
     DetailShopInfo,
     DetailGoodsInfo,
-    DetailParamInfo
+    DetailParamInfo,
+    DetailCommentInfo,
+    GoodsList
   },
   data() {
     return {
@@ -53,7 +62,7 @@ export default {
     // 1.保存传入的iid
     this.iid = this.$route.params.iid
     // 2.根据iid请求详情数据
-    getDetail(this.iid).then((res) => {
+    getDetail(this.iid).then(res => {
       // console.log(res)
       const data = res.result;
       // 轮播图的切换
@@ -66,12 +75,25 @@ export default {
       this.detailInfo = data.detailInfo;
       // 获取商品参数信息
       this.paramInfo = new GoodsParam(data.itemParams.info, data.itemParams.rule);
+      // 获取评论信息
+      if (data.rate.cRate !== 0) {
+        this.commentInfo = data.rate.list[0];
+      }
+    })
+    // 3.请求推荐数据
+    getRecommend().then(res => {
+      this.recommendList = res.data.list
     })
   },
   methods: {
+    // 解决滚动bug
     imageLoad() {
       this.$refs.scroll.refresh()
     }
+  },
+  destroyed() {
+    // 取消全局事件的监听(注意第2个参数必须是个函数)
+    this.$bus.$off('itemImageLoad', this.itemImageListener)
   }
 }
 </script>

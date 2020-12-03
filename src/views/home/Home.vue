@@ -6,7 +6,8 @@
         <div>购物街</div> 
       </template>
     </nav-bar>
-    <!-- tab-control横向导航 -->
+
+    <!-- tab-control横向导航(复制) -->
     <tab-control :titles="['流行','新款','精选']"
                   ref="tabControlOuter"
                   class="tab-control"
@@ -51,9 +52,11 @@ import FeatureView from './childComps/FeatureView'
 
 import { getHomeMultidata, getHomeGoods } from 'network/home'
 import { debounce } from 'common/utils'
+import { itemLinstenerMixin } from 'common/mixin'
 
 export default {
   name: "Home",
+  mixins: [itemLinstenerMixin],
   components: {
     NavBar,
     TabControl,
@@ -78,26 +81,6 @@ export default {
       tabOffsetTop: 0,
       isTabFixed: false,
       saveY: 0
-    }
-  },
-  created() {
-    // 1.请求轮播图、推荐小圆圈数据
-    this.getHomeMultidata()
-    // 2.请求商品数据
-    this.getHomeGoods('pop')
-    this.getHomeGoods('new')
-    this.getHomeGoods('sell')
-  },
-  mounted() {
-    // 监听GoodsListItem中图片加载完成
-    const refresh = debounce(this.$refs.scroll.refresh, 50)
-    this.$bus.$on('itemImageLoad', () => {
-      refresh()
-    })
-  },
-  computed: {
-    showGoods() {
-      return this.goods[this.currentType].list
     }
   },
   methods: {
@@ -160,14 +143,40 @@ export default {
       })
     }
   },
-  // 再次切回首页时保持离开时的位置
+  computed: {
+    showGoods() {
+      return this.goods[this.currentType].list
+    }
+  },
+  created() {
+    // 1.请求轮播图、推荐小圆圈数据
+    this.getHomeMultidata()
+    // 2.请求商品数据
+    this.getHomeGoods('pop')
+    this.getHomeGoods('new')
+    this.getHomeGoods('sell')
+  },
+  // mounted() {
+  //   // 监听GoodsListItem中图片加载完成
+  //   const dbRefresh = debounce(this.$refs.scroll.refresh, 50)
+  //   // 对监听的事件进行保存
+  //   this.itemImageListener = () => {
+  //     dbRefresh()
+  //   }
+  //   // 监听全局总线事件(注意第2个参数必须是个函数)
+  //   this.$bus.$on('itemImageLoad', this.itemImageListener)
+  // },
   activated() {
+    // 再次切回首页时保持离开时的位置
     this.$refs.scroll.scrollTo(0, this.saveY, 0)
     this.$refs.scroll.refresh()
   },
-  // 记录首页商品离开时的位置
   deactivated() {
+    // 记录首页商品离开时的位置
     this.saveY = this.$refs.scroll.getScrollY()
+
+    // 取消全局事件的监听(注意第2个参数必须是个函数)
+    this.$bus.$off('itemImageLoad', this.itemImageListener)
   }
 }
 </script>

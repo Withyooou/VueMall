@@ -1,6 +1,6 @@
 <template>
   <div class="goods-item" @click="itemClick">
-    <img :src="goodsItem.show.img" alt="" @load="imageLoad"/>
+    <img :src="showImage" alt="" @load="imageLoad"/>
     <div class="goods-info">
       <p>{{goodsItem.title}}</p>
       <span class="price">¥{{goodsItem.price}}</span>
@@ -22,10 +22,23 @@ export default {
   },
   methods: {
     imageLoad() {
+      // 1.思路一,通过路由判断路径,从而区分不同的事件
+      // if(this.$route.path.indexOf('/home')) {
+      //   this.$bus.$emit('homeItemImageLoad')
+      // } else if(this.$route.path.indexOf('/detail')) {
+      //   this.$bus.$emit('detailItemImageLoad')
+      // }
+      
+      // 2.思路二,多个用到该组件的页面都发出同名事件,在各个页面的 deactivated() 函数里取消全局事件的监听即可 this.$bus.$off 
       this.$bus.$emit('itemImageLoad')
     },
     itemClick() {
       this.$router.push('/detail/' + this.goodsItem.iid)
+    }
+  },
+  computed: {
+    showImage() {
+      return this.goodsItem.image || this.goodsItem.show.img
     }
   }
 }
