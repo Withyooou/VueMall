@@ -38,7 +38,7 @@ export default {
     })
 
     // 2.监听滚动的位置
-    if(this.probeType === 2 || this.probeType === 3){
+    if(this.probeType === 2 || this.probeType === 3) {
       this.scroll.on('scroll', (position) => {
         this.$emit('scroll', position)
       })

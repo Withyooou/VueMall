@@ -32,10 +32,13 @@
     },
     methods: {
       imageLoad() {
-        // 判断,等所有图片都加载完了,才发出一次事件
-        if(++this.counter === this.imagesLength) {
-          this.$emit('imageLoad')
-        }
+        // // 方法一：判断,等所有图片都加载完了,才发出一次事件
+        // if(++this.counter === this.imagesLength) {
+        //   this.$emit('imageLoad')
+        // }
+        
+        // 方法二：也可以直接发出,父组件用防抖函数处理
+        this.$emit('imageLoad')
       }
     },
     watch: {

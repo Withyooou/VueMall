@@ -1,16 +1,18 @@
 <template>
   <div id="detail">
-    <detail-nav-bar class="detail-nav"/>
+    <detail-nav-bar class="detail-nav" @titleClick="titleClick" ref="navBar"/>
     <scroll class="content" 
-            ref="scroll"
-            :probe-type="3">
+            ref="scroll" 
+            :probe-type="3" 
+            @scroll="scrollNavTheme">
+      <!-- 定义属性的时候是topImages,传入的时候最好写top-images,防止出现预料之外的错误 -->
       <detail-swiper :top-images="topImages"/>
       <detail-base-info :goods="goods"/>
       <detail-shop-info :shop="shop"/>
-      <detail-goods-info :detailInfo="detailInfo" @imageLoad="imageLoad"/>
-      <detail-param-info :paramInfo="paramInfo"/>
-      <detail-comment-info :commentInfo="commentInfo"/>
-      <goods-list :goods="recommendList"/>
+      <detail-goods-info :detail-info="detailInfo" @imageLoad="imageLoad"/>
+      <detail-param-info :param-info="paramInfo" ref="param"/>
+      <detail-comment-info :comment-info="commentInfo" ref="comment"/>
+      <goods-list :goods="recommendList" ref="recommend"/>
     </scroll>
   </div>
 </template>
@@ -55,6 +57,7 @@ export default {
       commentInfo: {},
       recommendList: [],
       themeTops: [],
+      getThemeTops: null,
       currentIndex: 0
     }
   },
@@ -84,11 +87,62 @@ export default {
     getRecommend().then(res => {
       this.recommendList = res.data.list
     })
+    // 4.对this.themeTops的赋值执行防抖处理
+    this.getThemeTops = debounce(() => {
+      this.themeTops = []
+      this.themeTops.push(0)
+      this.themeTops.push(this.$refs.param.$el.offsetTop-44)   // 44是detail-nav-bar的高度
+      this.themeTops.push(this.$refs.comment.$el.offsetTop-44)
+      this.themeTops.push(this.$refs.recommend.$el.offsetTop-44)
+      this.themeTops.push(Number.MAX_VALUE)
+      console.log(this.themeTops)
+    }, 200)
   },
   methods: {
-    // 解决滚动bug
+    // 解决DetailGoodsInfo商品详情滚动bug
     imageLoad() {
-      this.$refs.scroll.refresh()
+      // 方法一：直接调用refresh(),子组件中做了处理,这里只会调用一次
+      // this.$refs.scroll.refresh()
+
+      // 方法二：这里执行了防抖函数,详见mixin
+      this.dbRefresh()
+      
+      // 获取导航栏各个模块的offsetTop(用于导航栏滚动定位)
+      this.getThemeTops()
+    },
+    // 点击导航栏滚动到相应位置
+    titleClick(index) {
+      this.$refs.scroll.scrollTo(0, -this.themeTops[index], 600)
+    },
+    // 滚动位置和导航栏颜色的联动
+    scrollNavTheme(position) {
+      // 获取y值
+      const positionY = -position.y;
+
+      /*  判断方案一： */
+      // if(positionY < this.themeTops[1]) {
+      //   this.$refs.navBar.currentIndex = 0
+      // } else if(positionY >= this.themeTops[1] & positionY < this.themeTops[2]) {
+      //   this.$refs.navBar.currentIndex = 1
+      // } else if(positionY >= this.themeTops[2] & positionY < this.themeTops[3]) {
+      //   this.$refs.navBar.currentIndex = 2
+      // } else {
+      //   this.$refs.navBar.currentIndex = 3
+      // }
+
+      /* 判断方案二： */
+      // 运用条件2时这里必须length-1,因为数组最后一个数Number.MAX_VALUE没有意义
+      for (let i = 0; i < this.themeTops.length-1; i++) {   
+        // if条件1: (i < (length-1) && positionY >= this.themeTops[i] && positionY < this.themeTops[i+1]) || (i === (length-1) && positionY >= this.themeTops[i])
+
+        // if条件2: 给themeTops最后添加一个很大的值(Number.MAX_VALUE), 用于和最后一个主题的top进行比较
+        // this.currentIndex !== i是为了减少执行次数,提升代码性能
+        if (this.currentIndex !== i && positionY >= this.themeTops[i] && positionY < this.themeTops[i+1]) {
+          this.currentIndex = i;
+          this.$refs.navBar.currentIndex = this.currentIndex;
+          console.log(this.currentIndex)
+        }
+      }
     }
   },
   destroyed() {
@@ -106,8 +160,8 @@ export default {
     background-color: #fff;
   }
   .detail-nav {
-    position: relative;
-    z-index: 1001;
+    /* position: relative;
+    z-index: 1001; */
     background-color: #fff;
   }
   .content {

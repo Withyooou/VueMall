@@ -4,15 +4,16 @@ import { debounce } from './utils'
 export const itemLinstenerMixin = {
   data() {
     return {
-      itemImageListener: null
+      itemImageListener: null,
+      dbRefresh: null
     }
   },
   mounted() {
     // 监听GoodsListItem中图片加载完成
-    const dbRefresh = debounce(this.$refs.scroll.refresh, 50)
+    this.dbRefresh = debounce(this.$refs.scroll.refresh, 50)
     // 对监听的事件进行保存
     this.itemImageListener = () => {
-      dbRefresh()
+      this.dbRefresh()
     }
     // 监听全局总线事件(注意第2个参数必须是个函数)
     this.$bus.$on('itemImageLoad', this.itemImageListener)
