@@ -18,7 +18,7 @@
     <back-top @click.native="backTop" class="back-top" v-show="showBackTop">
       <img src="~assets/img/common/top.png" alt="">
     </back-top>
-    <detail-bottom-bar @addToCart="addToCart"/>
+    <detail-bottom-bar @addToCar="addToCar"/>
   </div>
 </template>
 
@@ -152,7 +152,7 @@ export default {
         }
       }
     },
-    addToCart() {
+    addToCar() {
       // 1.获取购物车需要展示的信息
       const product = {};
       product.iid = this.iid;
@@ -161,8 +161,8 @@ export default {
       product.desc = this.goods.desc;
       product.realPrice = this.goods.realPrice;
       // 2.将商品信息添加到购物车里
-      // this.$store.commit('addCart', product)
-      this.$store.dispatch('addCart', product)
+      // this.$store.commit('addCar', product)
+      this.$store.dispatch('addCar', product)
     }
   },
   destroyed() {

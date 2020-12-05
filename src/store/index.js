@@ -9,7 +9,7 @@ import actions from './actions'
 Vue.use(Vuex)
 
 const state = {
-  cartList: []
+  carList: []
 }
 
 // 2.创建store对象

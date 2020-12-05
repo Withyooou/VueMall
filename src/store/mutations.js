@@ -3,12 +3,24 @@
  * (1)唯一目的就是修改state中的状态
  * (2)尽可能使每个方法完成的事情单一一点
  */
+
+import {
+  ADD_COUNTER,
+  CUT_COUNTER,
+  ADD_TO_CAR
+} from './mutation-types'
+
 export default {
-  addCounter(state, payLoad) {
+  [ADD_COUNTER](state, payLoad) {
     payLoad.count ++
   },
-  addToCart(state, payLoad) {
-    state.cartList.push(payLoad)
+  [CUT_COUNTER](state, payLoad) {
+    if(payLoad.count > 1) {
+      payLoad.count --
+    }
+  },
+  [ADD_TO_CAR](state, payLoad) {
+    state.carList.push(payLoad)
   }
 }
 

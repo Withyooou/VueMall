@@ -1,9 +1,9 @@
 export default {
-  cartList(state) {
-    return state.cartList
+  carList(state) {
+    return state.carList
   },
-  cartCount(state, getters) {
-    return getters.cartList.length
+  carLength(state, getters) {
+    return state.carList.length
   }
 }
 
