@@ -6,7 +6,6 @@
         <div>购物街</div> 
       </template>
     </nav-bar>
-
     <!-- tab-control横向导航(复制) -->
     <tab-control :titles="['流行','新款','精选']"
                   ref="tabControlOuter"
@@ -31,7 +30,6 @@
       <!-- 商品列表 -->
       <goods-list :goods="showGoods"/>
     </scroll>
-
     <!-- 监听一个组件的原生事件时,必须给对应的事件加上.native修饰符才能正常进行监听 -->
     <back-top @click.native="backTop" class="back-top" v-show="showBackTop">
       <img src="~assets/img/common/top.png" alt="">
@@ -44,7 +42,6 @@ import NavBar from 'components/common/navbar/NavBar'
 import TabControl from 'components/content/tabcontrol/TabControl'
 import GoodsList from 'components/content/goods/GoodsList'
 import Scroll from 'components/common/scroll/Scroll'
-import BackTop from 'components/content/backtop/BackTop'
 
 import HomeSwiper from './childComps/HomeSwiper'
 import RecommendView from './childComps/RecommendView'
@@ -52,11 +49,11 @@ import FeatureView from './childComps/FeatureView'
 
 import { getHomeMultidata, getHomeGoods } from 'network/home'
 import { debounce } from 'common/utils'
-import { itemLinstenerMixin } from 'common/mixin'
+import { itemLinstenerMixin, backTopMixin } from 'common/mixin'
 
 export default {
   name: "Home",
-  mixins: [itemLinstenerMixin],
+  mixins: [itemLinstenerMixin, backTopMixin],
   components: {
     NavBar,
     TabControl,
@@ -64,8 +61,7 @@ export default {
     RecommendView,
     FeatureView,
     GoodsList,
-    Scroll,
-    BackTop
+    Scroll
   },
   data() {
     return {
@@ -77,7 +73,6 @@ export default {
         'sell': {page: 0, list: []}
       },
       currentType: 'pop',
-      showBackTop: false,
       tabOffsetTop: 0,
       isTabFixed: false,
       saveY: 0
@@ -102,9 +97,6 @@ export default {
       // 统一两个tab-control的高亮位置
       this.$refs.tabControlInner.currentIndex = index;
       this.$refs.tabControlOuter.currentIndex = index;
-    },
-    backTop() {
-      this.$refs.scroll.scrollTo(0, 0, 500)
     },
     contentScroll(position) {
       // 1.判断backTop是否显示

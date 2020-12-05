@@ -14,6 +14,11 @@
       <detail-comment-info :comment-info="commentInfo" ref="comment"/>
       <goods-list :goods="recommendList" ref="recommend"/>
     </scroll>
+    <!-- 监听一个组件的原生事件时,必须给对应的事件加上.native修饰符才能正常进行监听 -->
+    <back-top @click.native="backTop" class="back-top" v-show="showBackTop">
+      <img src="~assets/img/common/top.png" alt="">
+    </back-top>
+    <detail-bottom-bar @addToCart="addToCart"/>
   </div>
 </template>
 
@@ -26,15 +31,16 @@ import DetailShopInfo from './childComps/DetailShopInfo'
 import DetailGoodsInfo from './childComps/DetailGoodsInfo'
 import DetailParamInfo from './childComps/DetailParamInfo'
 import DetailCommentInfo from './childComps/DetailCommentInfo'
+import DetailBottomBar from './childComps/DetailBottomBar'
 import GoodsList from 'components/content/goods/GoodsList'
 
 import { getDetail, getRecommend, Goods, Shop, GoodsParam } from 'network/detail'
 import { debounce } from 'common/utils'
-import { itemLinstenerMixin } from 'common/mixin'
+import { itemLinstenerMixin, backTopMixin } from 'common/mixin'
 
 export default {
   name: "Detail",
-  mixins: [itemLinstenerMixin],
+  mixins: [itemLinstenerMixin, backTopMixin],
   components: { 
     Scroll,
     DetailNavBar,
@@ -44,6 +50,7 @@ export default {
     DetailGoodsInfo,
     DetailParamInfo,
     DetailCommentInfo,
+    DetailBottomBar,
     GoodsList
   },
   data() {
@@ -118,6 +125,8 @@ export default {
     scrollNavTheme(position) {
       // 获取y值
       const positionY = -position.y;
+      // 判断backTop是否显示
+      this.showBackTop = positionY > 1000
 
       /*  判断方案一： */
       // if(positionY < this.themeTops[1]) {
@@ -140,9 +149,20 @@ export default {
         if (this.currentIndex !== i && positionY >= this.themeTops[i] && positionY < this.themeTops[i+1]) {
           this.currentIndex = i;
           this.$refs.navBar.currentIndex = this.currentIndex;
-          console.log(this.currentIndex)
         }
       }
+    },
+    addToCart() {
+      // 1.获取购物车需要展示的信息
+      const product = {};
+      product.iid = this.iid;
+      product.imgURL = this.topImages[0]
+      product.title = this.goods.title
+      product.desc = this.goods.desc;
+      product.realPrice = this.goods.realPrice;
+      // 2.将商品信息添加到购物车里
+      // this.$store.commit('addCart', product)
+      this.$store.dispatch('addCart', product)
     }
   },
   destroyed() {
@@ -156,16 +176,20 @@ export default {
   #detail {
     height: 100vh;
     position: relative;
-    z-index: 1000;
+    z-index: 1000;  /* TabBar的z-index为999,此处设置1000是为了把TabBar盖住 */
     background-color: #fff;
   }
   .detail-nav {
-    /* position: relative;
-    z-index: 1001; */
     background-color: #fff;
   }
   .content {
-    height: calc(100% - 44px);
+    height: calc(100% - 44px - 58px);
     overflow: hidden;
+  }
+  .back-top {
+    position: fixed;
+    right: 10px;
+    bottom: 60px;
+    z-index: 9999;
   }
 </style>
