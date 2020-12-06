@@ -1,54 +1,67 @@
 <template>
   <div class="bottom-bar">
-    <check-button class="select-all"></check-button>
+    <check-button class="select-all"
+                  :is-checked="isSelectAll"
+                  @click.native="allClick"></check-button>
     <span>全选</span>
     <span class="total-price">合计: ¥{{totalPrice}}</span>
-    <span class="buy-product">去计算({{checkLength}})</span>
+    <span class="buy-product" @click="calcClick">去计算({{checkLength}})</span>
   </div>
 </template>
 
 <script>
-  import CheckButton from './CheckButton'
+import CheckButton from './CheckButton'
 
-	export default {
-		name: "CarBottomBar",
-    components: {
-      CheckButton
-    },
-    computed: {
-      totalPrice() {
-        return this.$store.state.carList.filter(item => {
+export default {
+  name: 'CarBottomBar',
+  components: {
+    CheckButton,
+  },
+  computed: {
+    // 计算商品总价格
+    totalPrice() {
+      return this.$store.state.carList
+        .filter((item) => {
           return item.checked
-        }).reduce((preValue, item) => {
+        })
+        .reduce((preValue, item) => {
           return preValue + item.count * item.realPrice
-        }, 0).toFixed(2)
-      },
-      checkLength() {
-        return this.$store.state.carList.filter(item => item.checked).length
-      },
-      isSelectAll() {
-        // find()没有找到符合条件的数组成员时返回undefined
-        return this.$store.state.carList.find(item => item.checked === false) === undefined;
+        }, 0)
+        .toFixed(2)
+    },
+    // 去计算括号中数值的判断
+    checkLength() {
+      return this.$store.state.carList.filter((item) => item.checked).length
+    },
+    // 判断是否全选
+    isSelectAll() {
+      if (this.$store.state.carList.length === 0) return false
+      // 1.使用filter函数
+      // return !(this.$store.state.carList.filter(item => item.checked === false).length);
+
+      // 2.使用find函数,find()没有找到符合条件的数组成员时返回undefined,并且不再继续执行,性能稍高
+      return this.$store.state.carList.find((item) => item.checked === false) === undefined
+    },
+  },
+  methods: {
+    allClick() {
+      if (this.isSelectAll) {
+        // 如果全部选中,则将之全部取消
+        this.$store.state.carList.forEach(item => item.checked = false);
+      } else {
+        // 如果部分或全部未选中,则将之全选
+        this.$store.state.carList.forEach(item => item.checked = true);
       }
     },
-    methods: {
-      // checkBtnClick: function () {
-      //   // 1.判断是否有未选中的按钮
-      //   let isSelectAll = this.$store.getters.this.$store.state.carList.find(item => !item.checked);
-
-      //   // 2.有未选中的内容, 则全部选中
-      //   if (isSelectAll) {
-      //     this.$store.state.this.$store.state.carList.forEach(item => {
-      //       item.checked = true;
-      //     });
-      //   } else {
-      //     this.$store.state.this.$store.state.carList.forEach(item => {
-      //       item.checked = false;
-      //     });
-      //   }
-      // }
+    calcClick() {
+      if(!this.isSelectAll) {
+        this.$toast.show('请选择购买的商品')
+      } else {
+        this.$toast.show('不会真有人想结算吧? !')
+      }
     }
-	}
+  }
+}
 </script>
 
 <style scoped>
@@ -60,7 +73,7 @@
     background-color: #eee;
     position: fixed;
     bottom: 49px;
-    box-shadow: 0 -2px 1px rgba(0, 0, 0, .2);
+    box-shadow: 0 -2px 1px rgba(0, 0, 0, 0.2);
     line-height: 44px;
     padding-left: 35px;
     box-sizing: border-box;

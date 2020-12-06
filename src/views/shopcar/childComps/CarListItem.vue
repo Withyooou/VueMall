@@ -34,6 +34,11 @@ export default {
       }
     }
   },
+  data() {
+    return {
+      count: 0
+    }
+  },
   components: {
     CheckButton
   },
@@ -47,7 +52,11 @@ export default {
     },
     countDecrease() {
       console.log('decrease')
-      this.$store.commit('cut_counter', this.product)
+      if(this.product.count > 1) {
+        this.$store.commit('cut_counter', this.product)    
+      } else {
+        this.$toast.show('停停！不要再减了~')
+      }
     }
   }
 }

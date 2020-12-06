@@ -4,6 +4,7 @@
  * (2)尽可能使每个方法完成的事情单一一点
  */
 
+import { reject } from 'core-js/fn/promise'
 import {
   ADD_COUNTER,
   CUT_COUNTER,
@@ -15,9 +16,7 @@ export default {
     payLoad.count ++
   },
   [CUT_COUNTER](state, payLoad) {
-    if(payLoad.count > 1) {
       payLoad.count --
-    }
   },
   [ADD_TO_CAR](state, payLoad) {
     state.carList.push(payLoad)

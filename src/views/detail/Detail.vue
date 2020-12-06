@@ -161,8 +161,9 @@ export default {
       product.desc = this.goods.desc;
       product.realPrice = this.goods.realPrice;
       // 2.将商品信息添加到购物车里
-      // this.$store.commit('addCar', product)
-      this.$store.dispatch('addCar', product)
+      this.$store.dispatch('addCar', product).then(res => {
+        this.$toast.show(res)
+      })
     }
   },
   destroyed() {
