@@ -4,6 +4,7 @@
     <nav-bar>
       <template v-slot:center>
         <div>购物车({{length}})</div> 
+        <img src="~assets/img/car/broom.svg" alt="" class="sweep" @click="sweepClick">
       </template>
     </nav-bar>
     <!-- 购物车商品列表 -->
@@ -45,6 +46,12 @@ export default {
   // 需要有keep-alive时才有该方法
   activated() {
     this.$refs.scroll.refresh()
+  },
+  methods: {
+    sweepClick() {
+      this.$store.commit('clear_car')
+      this.$toast.show('购物车已清空')
+    }
   }
 }
 </script>
@@ -60,5 +67,11 @@ export default {
   .content {
     height: calc(100% - 44px - 49px - 44px);
     overflow: hidden;
+  }
+  .sweep {
+    width: 20px;
+    position: absolute;
+    left: 70%;
+    cursor: pointer;
   }
 </style>

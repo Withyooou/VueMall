@@ -35,5 +35,6 @@ export default {
     flex-flow: row nowrap;
     align-items: center;
     justify-content: space-around;
+    position: relative;
   }
 </style>

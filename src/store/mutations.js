@@ -8,7 +8,8 @@ import { reject } from 'core-js/fn/promise'
 import {
   ADD_COUNTER,
   CUT_COUNTER,
-  ADD_TO_CAR
+  ADD_TO_CAR,
+  CLEAR_CAR
 } from './mutation-types'
 
 export default {
@@ -20,6 +21,9 @@ export default {
   },
   [ADD_TO_CAR](state, payLoad) {
     state.carList.push(payLoad)
+  },
+  [CLEAR_CAR](state) {
+    state.carList = []
   }
 }
 
