@@ -54,7 +54,7 @@ export default {
       }
     },
     calcClick() {
-      if(!this.isSelectAll) {
+      if(this.checkLength == 0) {
         this.$toast.show('请选择购买的商品')
       } else {
         this.$toast.show('不会真有人想结算吧? !')
