@@ -1,144 +1,185 @@
 <template>
-  <div class="wrapper">
-    <ul>
-      <li>数据1</li>
-      <li>数据2</li>
-      <li>数据3</li>
-      <li>数据4</li>
-      <li>数据5</li>
-      <li>数据6</li>
-      <li>数据7</li>
-      <li>数据8</li>
-      <li>数据9</li>
-      <li>数据10</li>
-      <li>数据11</li>
-      <li>数据12</li>
-      <li>数据13</li>
-      <li>数据14</li>
-      <li>数据15</li>
-      <li>数据16</li>
-      <li>数据17</li>
-      <li>数据18</li>
-      <li>数据19</li>
-      <li>数据20</li>
-      <li>数据21</li>
-      <li>数据22</li>
-      <li>数据23</li>
-      <li>数据24</li>
-      <li>数据25</li>
-      <li>数据26</li>
-      <li>数据27</li>
-      <li>数据28</li>
-      <li>数据29</li>
-      <li>数据30</li>
-      <li>数据31</li>
-      <li>数据32</li>
-      <li>数据33</li>
-      <li>数据34</li>
-      <li>数据35</li>
-      <li>数据36</li>
-      <li>数据37</li>
-      <li>数据38</li>
-      <li>数据39</li>
-      <li>数据40</li>
-      <li>数据41</li>
-      <li>数据42</li>
-      <li>数据43</li>
-      <li>数据44</li>
-      <li>数据45</li>
-      <li>数据46</li>
-      <li>数据47</li>
-      <li>数据48</li>
-      <li>数据49</li>
-      <li>数据50</li>
-      <li>数据51</li>
-      <li>数据52</li>
-      <li>数据53</li>
-      <li>数据54</li>
-      <li>数据55</li>
-      <li>数据56</li>
-      <li>数据57</li>
-      <li>数据58</li>
-      <li>数据59</li>
-      <li>数据60</li>
-      <li>数据61</li>
-      <li>数据62</li>
-      <li>数据63</li>
-      <li>数据64</li>
-      <li>数据65</li>
-      <li>数据66</li>
-      <li>数据67</li>
-      <li>数据68</li>
-      <li>数据69</li>
-      <li>数据70</li>
-      <li>数据71</li>
-      <li>数据72</li>
-      <li>数据73</li>
-      <li>数据74</li>
-      <li>数据75</li>
-      <li>数据76</li>
-      <li>数据77</li>
-      <li>数据78</li>
-      <li>数据79</li>
-      <li>数据80</li>
-      <li>数据81</li>
-      <li>数据82</li>
-      <li>数据83</li>
-      <li>数据84</li>
-      <li>数据85</li>
-      <li>数据86</li>
-      <li>数据87</li>
-      <li>数据88</li>
-      <li>数据89</li>
-      <li>数据90</li>
-      <li>数据91</li>
-      <li>数据92</li>
-      <li>数据93</li>
-      <li>数据94</li>
-      <li>数据95</li>
-      <li>数据96</li>
-      <li>数据97</li>
-      <li>数据98</li>
-      <li>数据99</li>
-      <li>数据100</li>
-    </ul>
+  <div id="category">
+    <!-- 顶部导航栏 -->
+    <nav-bar>
+      <template v-slot:center>
+        <div>商品分类</div> 
+      </template>
+    </nav-bar>
+
+    <div class="content">
+      <!-- 左侧商品分类目录 -->
+      <tab-menu :categories="categories" @selectItem="selectItem"/>
+      <!-- 右侧商品分类数据 -->
+      <scroll class="tab-content" 
+              ref="scroll" 
+              :probe-type="3"
+              @scroll="contentScroll">
+        <tab-content-category :subcategories="showSubcategory"/>
+        <tab-control :titles="['综合', '新品', '销量']" @tabControl="tabControl"/>
+        <tab-content-detail :category-detail="showCategoryDetail"/>
+      </scroll>
+    </div>
+    
+    <!-- 返回顶部组件 -->
+    <back-top @click.native="backTop" class="back-top" v-show="showBackTop">
+      <img src="~assets/img/common/top.png" alt="">
+    </back-top>
   </div>
 </template>
 
 <script>
-import BScroll from 'better-scroll'
+import NavBar from 'components/common/navbar/NavBar'
+import Scroll from 'components/common/scroll/Scroll.vue';
+import TabControl from 'components/content/tabcontrol/TabControl';
+import TabMenu from './childComps/TabMenu'
+import TabContentCategory from './childComps/TabContentCategory';
+import TabContentDetail from './childComps/TabContentDetail'
+
+import { POP, SELL, NEW } from "common/const";
+import { itemLinstenerMixin, backTopMixin } from 'common/mixin'
+import { getCategory, getSubcategory, getCategoryDetail } from 'network/category'
+
 
 export default {
   name: "Category",
+  mixins: [itemLinstenerMixin, backTopMixin],
   data() {
     return {
-      scroll: null
+      categories: [],
+      categoryData: {},
+      currentIndex: -1,
+      tabControlIndex: 0,
+      currentType: 'pop',
     }
   },
-  mounted() {
-    this.scroll = new BScroll(document.querySelector('.wrapper'), {
-      probeType: 3,
-      click: true,
-      pullUpLoad: true
-    })
-    this.scroll.on('scroll',(position) => {
-      // console.log(position)
-    })
-    // 上拉加载更多
-    this.scroll.on('pullingUp', () => {
-      console.log('上拉加载更多')
-      setTimeout(() => {
-        this.scroll.finishPullUp()
-      }, 2000)
-    })
+  components: {
+    Scroll,
+    NavBar,
+    TabMenu,
+    TabContentCategory,
+    TabControl,
+    TabContentDetail
+  },
+  methods: {
+    /**
+     * 网络请求相关方法
+     */
+    _getCategory() {
+      getCategory().then(res => {
+        // 1.获取分类数据
+        this.categories = res.data.category.list
+        // 2.初始化每个类别的子数据(categoryData本身是一个对象,里面存放着一个数组,每个数组成员本身又是一个对象)
+        for (let i = 0; i < this.categories.length; i++) {
+          this.categoryData[i] = {
+            subcategories: {},
+            categoryDetail: {
+              'pop': [],
+              'new': [],
+              'sell': []
+            }
+          }
+        }
+        // 3.请求第一个分类的详细数据
+        this._getSubcategories(0)
+      })
+    },
+    _getSubcategories(index) {
+      this.currentIndex = index;
+      // 获取请求的mailKey
+      const mailKey = this.categories[index].maitKey;
+      // 发送请求,传入mailKey
+      getSubcategory(mailKey).then(res => {
+        // 将获取的数据保存下来
+        this.categoryData[index].subcategories = res.data
+        // 扩展运算符拷贝对象
+        this.categoryData = {...this.categoryData}
+        this._getCategoryDetail(POP)
+        this._getCategoryDetail(NEW)
+        this._getCategoryDetail(SELL)
+      })
+    },
+    _getCategoryDetail(type) {
+      // 获取请求的miniWallkey
+      const miniWallkey = this.categories[this.currentIndex].miniWallkey;
+      // 发送请求,传入miniWallkey和type
+      getCategoryDetail(miniWallkey, type).then(res => {
+        // 将获取的数据保存下来
+        this.categoryData[this.currentIndex].categoryDetail[type] = res
+        // 扩展运算符拷贝对象
+        this.categoryData = {...this.categoryData}
+        // console.log(this.categoryData)
+      })
+    },
+    /**
+     * 事件响应相关方法
+     */
+    selectItem(index) {
+      this._getSubcategories(index)
+    },
+    tabControl(index) {
+      switch (index) {
+        case 0:
+          this.currentType = 'pop'
+          break
+        case 1:
+          this.currentType = 'new'
+          break
+        case 2:
+          this.currentType = 'sell'
+          break
+      }
+    },
+    contentScroll(position) {
+      // 判断backTop是否显示
+      this.showBackTop = (-position.y) > 1000
+    }
+  },
+  computed: {
+    showSubcategory() {
+      if (this.currentIndex === -1) return {}
+      return this.categoryData[this.currentIndex].subcategories
+    },
+    showCategoryDetail() {
+      if (this.currentIndex === -1) return []
+      return this.categoryData[this.currentIndex].categoryDetail[this.currentType]
+    }
+  },
+  created() {
+    // 请求所有分类数据
+    this._getCategory()
+  },
+  activated() {
+    this.$refs.scroll.refresh()
   }
 }
 </script>
 
 <style scoped>
-  .wrapper {
-    height: 200px;
-    background-color: #bfa;
+  #category {
+    height: 100vh;
+  }
+  .nav-bar {
+    background-color: var(--color-tint);
+    color: #fff;
+  }
+  .content {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 44px;
+    bottom: 49px;
     overflow: hidden;
+    display: flex;
+  }
+  .tab-content {
+    height: 100%;
+    overflow: hidden;
+    flex: 1;
+  }
+  .back-top {
+    position: fixed;
+    right: 10px;
+    bottom: 60px;
   }
 </style>

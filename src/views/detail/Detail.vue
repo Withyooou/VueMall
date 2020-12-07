@@ -98,9 +98,9 @@ export default {
     this.getThemeTops = debounce(() => {
       this.themeTops = []
       this.themeTops.push(0)
-      this.themeTops.push(this.$refs.param.$el.offsetTop-44)   // 44是detail-nav-bar的高度
-      this.themeTops.push(this.$refs.comment.$el.offsetTop-44)
-      this.themeTops.push(this.$refs.recommend.$el.offsetTop-44)
+      this.themeTops.push(this.$refs.param.$el.offsetTop - 44)   // 44是detail-nav-bar的高度
+      this.themeTops.push(this.$refs.comment.$el.offsetTop - 44)
+      this.themeTops.push(this.$refs.recommend.$el.offsetTop - 44)
       this.themeTops.push(Number.MAX_VALUE)
       console.log(this.themeTops)
     }, 200)
@@ -169,6 +169,9 @@ export default {
   destroyed() {
     // 取消全局事件的监听(注意第2个参数必须是个函数)
     this.$bus.$off('itemImageLoad', this.itemImageListener)
+  },
+  mounted() {
+    console.log(this.$refs.navBar.$el.height)
   }
 }
 </script>

@@ -15,7 +15,7 @@ import CheckButton from './CheckButton'
 export default {
   name: 'CarBottomBar',
   components: {
-    CheckButton,
+    CheckButton
   },
   computed: {
     // 计算商品总价格

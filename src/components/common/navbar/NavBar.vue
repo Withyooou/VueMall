@@ -14,6 +14,7 @@ export default {
 
 <style scoped>
   .nav-bar {
+    font-size: 16px;
     display: flex;
     flex-flow: row nowrap;
     height: 44px;
@@ -32,6 +33,7 @@ export default {
     flex: 1;
     display: flex;
     flex-flow: row nowrap;
+    align-items: center;
     justify-content: space-around;
   }
 </style>

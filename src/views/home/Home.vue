@@ -115,7 +115,7 @@ export default {
     /**
      * 网络请求相关方法
      */
-    getHomeMultidata() {
+    _getHomeMultidata() {
       getHomeMultidata().then(res => {
         // console.log(res);
         // 获取轮播图数据
@@ -124,7 +124,7 @@ export default {
         this.recommends = res.data.recommend.list;
       })
     },
-    getHomeGoods(type) {
+    _getHomeGoods(type) {
       const page = this.goods[type].page + 1;
       getHomeGoods(type, page).then(res => {
         // console.log(res)
@@ -142,22 +142,12 @@ export default {
   },
   created() {
     // 1.请求轮播图、推荐小圆圈数据
-    this.getHomeMultidata()
+    this._getHomeMultidata()
     // 2.请求商品数据
-    this.getHomeGoods('pop')
-    this.getHomeGoods('new')
-    this.getHomeGoods('sell')
+    this._getHomeGoods('pop')
+    this._getHomeGoods('new')
+    this._getHomeGoods('sell')
   },
-  // mounted() {
-  //   // 监听GoodsListItem中图片加载完成
-  //   const dbRefresh = debounce(this.$refs.scroll.refresh, 50)
-  //   // 对监听的事件进行保存
-  //   this.itemImageListener = () => {
-  //     dbRefresh()
-  //   }
-  //   // 监听全局总线事件(注意第2个参数必须是个函数)
-  //   this.$bus.$on('itemImageLoad', this.itemImageListener)
-  // },
   activated() {
     // 再次切回首页时保持离开时的位置
     this.$refs.scroll.scrollTo(0, this.saveY, 0)
