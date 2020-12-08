@@ -7,75 +7,76 @@
       </template>
     </nav-bar>
 
-    <!-- 用户头像部分 -->
-    <user-info></user-info>
+    <scroll class="scroll-wrapper" ref="scroll">
+      <!-- 用户头像部分 -->
+      <user-info></user-info>
 
-    <!-- 账户余额部分 -->
-    <div class="account">
-      <div class="account-item">
-        <div class="number">
-          <span class="balance">0.00</span>元
+      <!-- 账户余额部分 -->
+      <div class="account">
+        <div class="account-item">
+          <div class="number">
+            <span class="balance">0.00</span>元
+          </div>
+          <div class="account-info">我的余额</div>
         </div>
-        <div class="account-info">我的余额</div>
-      </div>
-      <div class="account-item">
-        <div class="number">
-          <span class="balance">0</span>个
+        <div class="account-item">
+          <div class="number">
+            <span class="balance">0</span>个
+          </div>
+          <div class="account-info">我的优惠</div>
         </div>
-        <div class="account-info">我的优惠</div>
-      </div>
-      <div class="account-item">
-        <div class="number">
-          <span class="balance">0</span>分
+        <div class="account-item">
+          <div class="number">
+            <span class="balance">0</span>分
+          </div>
+          <div class="account-info">我的积分</div>
         </div>
-        <div class="account-info">我的积分</div>
       </div>
-    </div>
 
-    <!-- 选项栏部分 -->
-    <div class="order-list">
-      <div class="list-item">
-        <img src="~assets/img/profile/message.svg" alt="">
-        <span>我的消息</span>
+      <!-- 选项栏部分 -->
+      <div class="order-list">
+        <div class="list-item">
+          <img src="~assets/img/profile/message.svg" alt="">
+          <span>我的消息</span>
+        </div>
+        <div class="list-item">
+          <img src="~assets/img/profile/shopping.svg" alt="">
+          <span>积分商城</span>
+        </div>
+        <div class="list-item">
+          <img src="~assets/img/profile/vip.svg" alt="">
+          <span>会员卡</span>
+        </div>
       </div>
-      <div class="list-item">
-        <img src="~assets/img/profile/shopping.svg" alt="">
-        <span>积分商城</span>
-      </div>
-      <div class="list-item">
-        <img src="~assets/img/profile/vip.svg" alt="">
-        <span>会员卡</span>
-      </div>
-    </div>
 
-    <div class="service-list">
-      <div class="list-item">
-        <img src="~assets/img/profile/car.svg" alt="">
-        <span>我的购物车</span>
+      <div class="service-list">
+        <div class="list-item">
+          <img src="~assets/img/profile/car.svg" alt="">
+          <span>我的购物车</span>
+        </div>
+        <div class="list-item">
+          <img src="~assets/img/profile/pointer.svg" alt="">
+          <span>下载购物APP</span>
+        </div>
       </div>
-      <div class="list-item">
-        <img src="~assets/img/profile/pointer.svg" alt="">
-        <span>下载购物APP</span>
-      </div>
-    </div>
-    
-
-    
+    </scroll>
   </div>
 </template>
 
 <script>
   import UserInfo from './childComps/UserInfo'
   import NavBar from 'components/common/navbar/NavBar'
+  import Scroll from '../../components/common/scroll/Scroll' 
 
 	export default {
 		name: "Profile",
     components: {
       NavBar,
-      UserInfo
+      UserInfo,
+      Scroll
     },
-    data() {
-      return {}
+    activated() {
+      this.$refs.scroll.refresh()
     }
 	}
 </script>
@@ -134,5 +135,10 @@
     width: 28px;
     margin-right: 8px;
     vertical-align: middle;
+  }
+  .scroll-wrapper {
+    width: 100%;
+    height: calc(100% - 44px - 49px);
+    overflow: hidden;
   }
 </style>

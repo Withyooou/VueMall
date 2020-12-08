@@ -32,6 +32,7 @@ export default {
 <style scoped>
   .toast {
     width: 55%;
+    font-size: 14px;
     text-align: center;
     color: #fff;
     background-color: rgba(0, 0, 0, .7);

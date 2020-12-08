@@ -45,6 +45,7 @@
   #user-info .login-info {
     color: #fff;
     margin: 10px 0 0 15px;
+    font-size: 16px;
   }
   #user-info .login-info .phone {
     height: 20px;
