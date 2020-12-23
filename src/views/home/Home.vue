@@ -105,7 +105,7 @@ export default {
       this.isTabFixed = (-position.y) > this.tabOffsetTop
     },
     loadMore() {
-      this.getHomeGoods(this.currentType)
+      this._getHomeGoods(this.currentType)
     },
     swiperImageLoad() {
       // 直接mounted()里获取tab-control的offsetTop的值不准确,因为图片未加载完会导致sffsetTop的值偏小

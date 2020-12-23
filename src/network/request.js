@@ -3,7 +3,7 @@ import axios from 'axios'
 export function request(config) {
   // 1.创建axios实例
   const instance = axios.create({
-    baseURL: '最新接口请找coderwhy获取',
+    baseURL: '应coderwhy老师要求,接口地址不随意泄露,需要的朋友请找老师获取',
     timeout: 5000
   })
 
