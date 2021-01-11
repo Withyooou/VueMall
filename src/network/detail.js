@@ -1,8 +1,8 @@
-import {request} from "./request";
+import request from "./request.js";
 
 export function getDetail(iid){
   return request({
-    url:'/detail',
+    url:'/api/w6/detail',
     params:{
       iid
     }
@@ -11,7 +11,7 @@ export function getDetail(iid){
 
 export function getRecommend(){
   return request({
-    url:'/recommend'
+    url:'/api/w6/recommend'
   })
 }
 
