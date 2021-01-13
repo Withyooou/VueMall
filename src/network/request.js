@@ -4,7 +4,7 @@ import store from "../store";
 // export function request(config) {
 //   // 1.创建axios实例
 //   const instance = axios.create({
-//     baseURL: 'http://152.136.185.210:8000/api/w6',
+//     baseURL: '应coderwhy老师要求,接口地址不随意泄露,需要的朋友请找老师获取/api/w6',
 //     timeout: 5000
 //   })
 
@@ -63,7 +63,7 @@ const errorHandle = (status, other) => {
 
 // 创建axios实例
 const instance = axios.create({
-  baseURL: "http://152.136.185.210:8000",
+  baseURL: "应coderwhy老师要求,接口地址不随意泄露,需要的朋友请找老师获取",
   timeout: 5000
 });
 // 设置post请求头
