@@ -10,7 +10,7 @@ import GoodsListItem from './GoodsListItem'
 export default {
   name: 'GoodsList',
   props: {
-    goods:{
+    goods: {
       type: Array,
       default() {
         return []

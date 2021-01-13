@@ -1,18 +1,16 @@
 <template>
-  <grid-view>
-    <goods-list-item v-for="(item, index) in categoryDetail" :key="index" :goodsItem="item"></goods-list-item>
-  </grid-view>
+  <div>
+    <goods-list :goods="categoryDetail"/>
+  </div>
 </template>
 
 <script>
-  import GridView from 'components/common/gridview/GridView'
-  import GoodsListItem from 'components/content/goods/GoodsListItem'
+  import GoodsList from 'components/content/goods/GoodsList'
 
   export default {
     name: "TabContentDetail",
     components: {
-      GridView,
-      GoodsListItem
+      GoodsList
     },
     props: {
       categoryDetail: {

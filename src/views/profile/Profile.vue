@@ -15,19 +15,19 @@
       <div class="account">
         <div class="account-item">
           <div class="number">
-            <span class="balance">0.00</span>元
+            <span class="balance">11.11</span>元
           </div>
           <div class="account-info">我的余额</div>
         </div>
         <div class="account-item">
           <div class="number">
-            <span class="balance">0</span>个
+            <span class="balance">6</span>个
           </div>
           <div class="account-info">我的优惠</div>
         </div>
         <div class="account-item">
           <div class="number">
-            <span class="balance">0</span>分
+            <span class="balance">6</span>分
           </div>
           <div class="account-info">我的积分</div>
         </div>
@@ -50,7 +50,7 @@
       </div>
 
       <div class="service-list">
-        <div class="list-item">
+        <div class="list-item" @click="toShopCar">
           <img src="~assets/img/profile/car.svg" alt="">
           <span>我的购物车</span>
         </div>
@@ -77,6 +77,11 @@
     },
     activated() {
       this.$refs.scroll.refresh()
+    },
+    methods: {
+      toShopCar() {
+        this.$router.push('/shopcar')
+      }
     }
 	}
 </script>

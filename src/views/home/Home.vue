@@ -148,14 +148,13 @@ export default {
     this._getHomeGoods('sell')
   },
   activated() {
+    this.$refs.scroll.refresh()
     // 再次切回首页时保持离开时的位置
     this.$refs.scroll.scrollTo(0, this.saveY, 0)
-    this.$refs.scroll.refresh()
   },
   deactivated() {
     // 记录首页商品离开时的位置
     this.saveY = this.$refs.scroll.getScrollY()
-
     // 取消全局事件的监听(注意第2个参数必须是个函数)
     this.$bus.$off('itemImageLoad', this.itemImageListener)
   }

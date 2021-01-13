@@ -77,14 +77,14 @@ export default {
         title: '',
         message: '确认清空购物车？',
       })
-        .then(() => {
-          // on confirm
-          this.$store.commit('clear_car')
-          this.$toast.show('购物车已清空')
-        })
-        .catch(() => {
-          // on cancel
-        });
+      .then(() => {
+        // on confirm
+        this.$store.commit('clear_car')
+        this.$toast.show('购物车已清空')
+      })
+      .catch(() => {
+        // on cancel
+      });
       
     },
     longPressHandle(value) {

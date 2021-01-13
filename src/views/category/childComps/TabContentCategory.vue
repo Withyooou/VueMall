@@ -1,5 +1,4 @@
 <template>
-  <div>
     <grid-view :cols="3" :lineSpace="15" :h-margin="20" v-if="subcategories.list">
       <div class="item" v-for="(item, index) in subcategories.list" :key="index">
         <a :href="item.link">
@@ -8,7 +7,6 @@
         </a>
       </div>
     </grid-view>
-  </div>
 </template>
 
 <script>
@@ -23,7 +21,7 @@
       subcategories: {
         type: Object,
         default() {
-          return []
+          return {}
         }
       }
     }
@@ -31,9 +29,6 @@
 </script>
 
 <style scoped>
-  .panel img {
-    width: 100%;
-  }
   .item {
     text-align: center;
     font-size: 12px;

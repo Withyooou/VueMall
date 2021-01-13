@@ -1,13 +1,11 @@
 <template>
   <scroll id="tab-menu" ref="scroll">
-    <div class="menu-list">
-      <div class="menu-list-item"
-            :class="{active: index === currentIndex}"
-            v-for="(item, index) in categories"
-            :key="index"
-            @click="itemClick(index)">
-        {{item.title}}
-      </div>
+    <div class="tab-menu-item"
+          v-for="(item, index) in categories"
+          :class="{active: index === currentIndex}"
+          :key="index"
+          @click="itemClick(index)">
+      {{item.title}}
     </div>
   </scroll>
 </template>
@@ -54,13 +52,13 @@
     width: 100px;
     box-sizing: border-box;
   }
-  .menu-list-item {
+  .tab-menu-item {
     height: 45px;
     line-height: 45px;
     text-align: center;
     font-size: 14px;
   }
-  .menu-list-item.active {
+  .tab-menu-item.active {
     font-weight: 700;
     color: var(--color-high-text);
     background-color: #fff;

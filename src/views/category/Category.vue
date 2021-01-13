@@ -11,7 +11,7 @@
       <!-- 左侧商品分类目录 -->
       <tab-menu :categories="categories" @selectItem="selectItem"/>
       <!-- 右侧商品分类数据 -->
-      <scroll class="tab-content" 
+      <scroll class="tab-wrapper" 
               ref="scroll" 
               :probe-type="3"
               @scroll="contentScroll">
@@ -51,6 +51,7 @@ export default {
       currentIndex: -1,
       tabControlIndex: 0,
       currentType: 'pop',
+      saveY: 0
     }
   },
   components: {
@@ -69,7 +70,7 @@ export default {
       getCategory().then(res => {
         // 1.获取分类数据
         this.categories = res.data.category.list
-        // 2.初始化每个类别的子数据(categoryData本身是一个对象,里面存放着一个数组,每个数组成员本身又是一个对象)
+        // 2.初始化每个类别的子数据(categoryData本身是一个对象,key为数字,value本身又是一个对象)
         for (let i = 0; i < this.categories.length; i++) {
           this.categoryData[i] = {
             subcategories: {},
@@ -87,11 +88,11 @@ export default {
     _getSubcategories(index) {
       this.currentIndex = index;
       // 获取请求的mailKey
-      const mailKey = this.categories[index].maitKey;
+      const mailKey = this.categories[this.currentIndex].maitKey;
       // 发送请求,传入mailKey
       getSubcategory(mailKey).then(res => {
         // 将获取的数据保存下来
-        this.categoryData[index].subcategories = res.data
+        this.categoryData[this.currentIndex].subcategories = res.data
         // 扩展运算符拷贝对象
         this.categoryData = {...this.categoryData}
         this._getCategoryDetail(POP)
@@ -137,10 +138,12 @@ export default {
   },
   computed: {
     showSubcategory() {
+      // 防止渲染时报错(渲染dom的时候还没获取到数据)
       if (this.currentIndex === -1) return {}
       return this.categoryData[this.currentIndex].subcategories
     },
     showCategoryDetail() {
+      // 防止渲染时报错(渲染dom的时候还没获取到数据)
       if (this.currentIndex === -1) return []
       return this.categoryData[this.currentIndex].categoryDetail[this.currentType]
     }
@@ -151,6 +154,14 @@ export default {
   },
   activated() {
     this.$refs.scroll.refresh()
+    // 再次切回分类页时保持离开时的位置
+    this.$refs.scroll.scrollTo(0, this.saveY, 0)
+  },
+  deactivated() {
+    // 记录首页商品离开时的位置
+    this.saveY = this.$refs.scroll.getScrollY()
+    // 取消全局事件的监听(注意第2个参数必须是个函数)
+    this.$bus.$off('itemImageLoad', this.itemImageListener)
   }
 }
 </script>
@@ -172,7 +183,7 @@ export default {
     overflow: hidden;
     display: flex;
   }
-  .tab-content {
+  .tab-wrapper {
     height: 100%;
     overflow: hidden;
     flex: 1;
