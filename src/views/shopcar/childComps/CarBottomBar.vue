@@ -5,7 +5,7 @@
                   @click.native="allClick"></check-button>
     <span>全选</span>
     <span class="total-price">合计: ¥{{totalPrice}}</span>
-    <span class="buy-product" @click="calcClick">去计算({{checkLength}})</span>
+    <span class="buy-product" @click="calcClick">去结算({{checkLength}})</span>
   </div>
 </template>
 
@@ -40,7 +40,7 @@ export default {
       // return !(this.$store.state.carList.filter(item => item.checked === false).length);
 
       // 2.使用find函数,find()没有找到符合条件的数组成员时返回undefined,并且不再继续执行,性能稍高
-      return this.$store.state.carList.find((item) => item.checked === false) === undefined
+      return this.$store.state.carList.find(item => item.checked === false) === undefined
     },
   },
   methods: {

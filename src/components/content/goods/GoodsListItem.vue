@@ -33,7 +33,12 @@ export default {
       this.$bus.$emit('itemImageLoad')
     },
     itemClick() {
-      this.$router.push('/detail/' + this.goodsItem.iid)
+      // 详情页的推荐部分数据后端没提供,此处随便打开一个网页
+      if(this.goodsItem.item_id) {
+        location.href = 'https://weibo.com/u/5400347875'
+      } else {
+        this.$router.push('/detail/' + this.goodsItem.iid)
+      }
     }
   },
   computed: {
@@ -83,7 +88,7 @@ export default {
     top: 0;
     width: 14px;
     height: 14px;
-    /* 第一个0表示背景颜色,第二个0是background-position,两个14px是background-size */
+    /* 两个0是background-position,两个14px是background-size */
     background: url("~assets/img/common/collect.svg") 0 0/14px 14px;  
   }
 </style>

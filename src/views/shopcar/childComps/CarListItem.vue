@@ -1,7 +1,11 @@
 <template>
-  <div id="car-item">
+  <div id="car-item" 
+      @click="toDetail"
+      @touchstart="longPress" 
+      @touchend="clearLoop"
+      @touchmove="clearLoop">
     <div class="item-selector">
-      <check-button @click.native="checkedChange" :is-checked="product.checked"></check-button>
+      <check-button @click.native.stop="checkedChange" :is-checked="product.checked"></check-button>
     </div>
     <div class="item-img">
       <img :src="product.imgURL" alt="购物车商品图片">
@@ -12,9 +16,9 @@
       <div class="info-bottom">
         <div class="item-price left">¥{{product.realPrice}}</div>
         <div class="right count-wrapper">
-          <div class="decrease" @click="countDecrease"> - </div>
-          <div class="item-count">x{{product.count}}</div>
-          <div class="increase" @click="countIncrease"> + </div>
+          <div class="decrease" @click.stop="countDecrease"> - </div>
+          <div class="item-count" @click.stop>×{{product.count}}</div>
+          <div class="increase" @click.stop="countIncrease"> + </div>
         </div>
       </div>
     </div>
@@ -36,7 +40,9 @@ export default {
   },
   data() {
     return {
-      count: 0
+      count: 0,
+      loop: null,
+      isLongPress: false
     }
   },
   components: {
@@ -44,7 +50,8 @@ export default {
   },
   methods: {
     checkedChange() {
-      this.product.checked = !this.product.checked;
+      // this.product.checked = !this.product.checked;
+      this.$store.commit('checked_change', this.product)
     },
     countIncrease() {
       console.log('increase')
@@ -57,6 +64,23 @@ export default {
       } else {
         this.$toast.show('停停！不要再减了~')
       }
+    },
+    toDetail() {
+      if(!this.isLongPress) {
+        this.$router.push('/detail/' + this.product.iid)
+      }
+    },
+    longPress() {
+      this.isLongPress = false  // 先设为false,点击事件可以正常执行
+      clearTimeout(this.loop);  // 再次清空定时器,防止重复注册定时器
+      this.loop = setTimeout(() => {
+        this.isLongPress = true
+        // this.$toast.show('长按了')
+        this.$bus.$emit('longPress', this.product.iid)
+      }, 1000);
+    },
+    clearLoop() {
+      clearTimeout(this.loop);
     }
   }
 }
@@ -118,6 +142,7 @@ export default {
     padding: 0 10px;
     border-left: 1px solid #333;
     border-right: 1px solid #333;
+    /* pointer-events: none; */
   }
   .count-wrapper {
     display: flex;

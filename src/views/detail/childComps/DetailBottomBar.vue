@@ -10,23 +10,42 @@
         <span class="text">店铺</span>
       </div>
       <div>
-        <i class="icon select"></i>
+        <i class="icon select" @click="collect"></i>
         <span class="text">收藏</span>
       </div>
     </div>
     <div class="bar-item bar-right">
       <div class="cart" @click="addToCart">加入购物车</div>
-      <div class="buy">购买</div>
+      <div class="buy" @click="buy">购买</div>
     </div>
   </div>
 </template>
 
 <script>
 	export default {
-		name: "DetailBottomBar",
+    name: "DetailBottomBar",
+    data() {
+      return {
+        isCollect: false
+      }
+    },
     methods: {
       addToCart() {
         this.$emit('addToCar')
+      },
+      collect() {
+        if(!this.isCollect) {
+          this.isCollect = !this.isCollect
+          this.$toast.show('商品已收藏')
+          document.querySelector('.select').style.backgroundPosition = '0 -27px'
+        } else {
+          this.isCollect = !this.isCollect
+          this.$toast.show('已取消收藏')
+          document.querySelector('.select').style.backgroundPosition = '0 0'
+        }
+      },
+      buy() {
+        this.$toast.show('不会真有人想购买吧？！')
       }
     }
 	}
@@ -62,8 +81,8 @@
     width: 22px;
     height: 22px;
     margin-bottom: 4px;
-    /* margin: 10px auto 3px; */
-    background: url("~assets/img/detail/detail_bottom.png") 0 0/100%;
+    /* 二倍精灵图,宽度需要为原来的一半 */
+    background: url("~assets/img/detail/detail_bottom.png") 0 0/22px;
   }
   .bar-left .service {
     background-position:0 -53px;

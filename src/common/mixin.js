@@ -18,7 +18,7 @@ export const itemLinstenerMixin = {
     }
     // 监听全局总线事件(注意第2个参数必须是个函数)
     this.$bus.$on('itemImageLoad', this.itemImageListener)
-    console.log('mixin的内容')
+    console.log('mixin')
   }
 }
 

@@ -1,7 +1,7 @@
 <template>
   <div id="detail">
     <detail-nav-bar class="detail-nav" @titleClick="titleClick" ref="navBar"/>
-    <scroll class="content" 
+    <scroll class="wrapper" 
             ref="scroll" 
             :probe-type="3" 
             @scroll="scrollNavTheme">
@@ -73,7 +73,6 @@ export default {
     this.iid = this.$route.params.iid
     // 2.根据iid请求详情数据
     getDetail(this.iid).then(res => {
-      // console.log(res)
       const data = res.result;
       // 轮播图的切换
       this.topImages = data.itemInfo.topImages;
@@ -92,6 +91,7 @@ export default {
     })
     // 3.请求推荐数据
     getRecommend().then(res => {
+      // console.log(res.data.list)
       this.recommendList = res.data.list
     })
     // 4.对this.themeTops的赋值执行防抖处理
@@ -114,7 +114,7 @@ export default {
       // 方法二：这里执行了防抖函数,详见mixin
       this.dbRefresh()
       
-      // 获取导航栏各个模块的offsetTop(用于导航栏滚动定位)
+      // 获取导航栏各个模块的offsetTop(用于导航栏滚动定位,前面对该函数执行了防抖操作)
       this.getThemeTops()
     },
     // 点击导航栏滚动到相应位置
@@ -144,7 +144,7 @@ export default {
       for (let i = 0; i < this.themeTops.length-1; i++) {   
         // if条件1: (i < (length-1) && positionY >= this.themeTops[i] && positionY < this.themeTops[i+1]) || (i === (length-1) && positionY >= this.themeTops[i])
 
-        // if条件2: 给themeTops最后添加一个很大的值(Number.MAX_VALUE), 用于和最后一个主题的top进行比较
+        // if条件2: 给themeTops最后添加一个很大的值(Number.MAX_VALUE), 用于和最后一个主题的top进行比较(否则最后 i+1 会超出数组索引)
         // this.currentIndex !== i是为了减少执行次数,提升代码性能
         if (this.currentIndex !== i && positionY >= this.themeTops[i] && positionY < this.themeTops[i+1]) {
           this.currentIndex = i;
@@ -169,9 +169,6 @@ export default {
   destroyed() {
     // 取消全局事件的监听(注意第2个参数必须是个函数)
     this.$bus.$off('itemImageLoad', this.itemImageListener)
-  },
-  mounted() {
-    console.log(this.$refs.navBar.$el.height)
   }
 }
 </script>
@@ -186,7 +183,7 @@ export default {
   .detail-nav {
     background-color: #fff;
   }
-  .content {
+  .wrapper {
     height: calc(100% - 44px - 58px);
     overflow: hidden;
   }

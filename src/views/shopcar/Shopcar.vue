@@ -8,11 +8,20 @@
       </template>
     </nav-bar>
     <!-- 购物车商品列表 -->
-    <scroll class="content" ref="scroll">
+    <scroll class="wrapper" ref="scroll">
       <car-list/>
     </scroll>
     <!-- 底部结算模块 -->
     <car-bottom-bar/>
+    <!-- ActionSheet动作面板 -->
+    <van-action-sheet
+      v-model="show"
+      :actions="actions"
+      cancel-text="取消"
+      close-on-click-action
+      @cancel="onCancel"
+      @select="onSelect"
+    />
   </div>
 </template>
 
@@ -32,6 +41,21 @@ export default {
     CarList,
     CarBottomBar
   },
+  data() {
+    return {
+      show: false,
+      delId: '',
+      actions: [
+        { 
+          name: '删除',
+          color: '#FF8198'
+        }, 
+        { 
+          name: '找相似' 
+        }
+      ]
+    }
+  },
   computed: {
     // mapGetters用于将store中的getters映射到局部计算属性computed
     // 用法一：数组用法
@@ -49,9 +73,44 @@ export default {
   },
   methods: {
     sweepClick() {
-      this.$store.commit('clear_car')
-      this.$toast.show('购物车已清空')
-    }
+      this.$dialog.confirm({
+        title: '',
+        message: '确认清空购物车？',
+      })
+        .then(() => {
+          // on confirm
+          this.$store.commit('clear_car')
+          this.$toast.show('购物车已清空')
+        })
+        .catch(() => {
+          // on cancel
+        });
+      
+    },
+    longPressHandle(value) {
+      this.show = true
+      this.delId = value
+    },
+    onCancel() {
+      this.show = false;
+      // this.$toast.show('取消');
+    },
+    onSelect(item, index) {
+      // 默认情况下点击选项时不会自动收起,html中已通过 close-on-click-action 属性开启自动收起
+      this.show = false;
+      if(index === 0) {
+        // 删除
+        // findIndex()找出第一个符合条件的数组成员的索引位置,如果没有找到则返回 -1 
+        this.$store.commit('clear_car_item', this.$store.state.carList.findIndex(item => item.iid === this.delId))
+      } else {
+        // 找相似
+        this.$router.push('/category')
+      }
+    },
+  },
+  mounted() {
+    // 第二个参数需要是一个函数
+    this.$bus.$on('longPress', this.longPressHandle)
   }
 }
 </script>
@@ -64,7 +123,7 @@ export default {
     background-color: var(--color-tint);
     color: #fff;
   }
-  .content {
+  .wrapper {
     height: calc(100% - 44px - 49px - 44px);
     overflow: hidden;
   }

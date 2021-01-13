@@ -19,10 +19,12 @@ export default {
     }
   },
   props: {
+    // 是否派发滚动事件
     probeType: {
       type: Number,
       default: 0    // 默认是0,不监听滚动
     },
+    // 是否开启上拉加载功能
     pullUpLoad:{
       type: Boolean,
       default: false

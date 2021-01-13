@@ -5,9 +5,13 @@ import store from './store'
 import FastClick from 'fastclick'
 import VueLazyLoad from 'vue-lazyload'
 import toast from 'components/common/toast'
+import { Dialog, ActionSheet } from 'vant';
 
 Vue.config.productionTip = false
 
+// 全局注册Vant组件
+Vue.use(Dialog);
+Vue.use(ActionSheet);
 // 安装toast插件
 Vue.use(toast)
 

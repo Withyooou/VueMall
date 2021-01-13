@@ -13,7 +13,7 @@
                   @tabControl="tabControl" 
                   v-show="isTabFixed"/>
 
-    <scroll class="content" 
+    <scroll class="wrapper" 
             ref="scroll"
             :probe-type="3" 
             :pull-up-load="true"
@@ -101,7 +101,7 @@ export default {
     contentScroll(position) {
       // 1.判断backTop是否显示
       this.showBackTop = (-position.y) > 1000
-      // 2.决定tabControl是否吸顶
+      // 2.决定tabControl是否吸顶(tabControlOuter的显示与否)
       this.isTabFixed = (-position.y) > this.tabOffsetTop
     },
     loadMore() {
@@ -127,7 +127,6 @@ export default {
     _getHomeGoods(type) {
       const page = this.goods[type].page + 1;
       getHomeGoods(type, page).then(res => {
-        // console.log(res)
         this.goods[type].list.push(...res.data.list)  // ES6扩展运算符
         this.goods[type].page ++
         // 完成上拉加载更多
@@ -178,7 +177,7 @@ export default {
     top: 0;
     z-index: 9; */
   }
-  .content {
+  .wrapper {
     position: absolute;
     top: 44px;
     bottom: 49px;
