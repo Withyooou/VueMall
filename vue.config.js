@@ -18,7 +18,7 @@ module.exports = {
     port: 8888,  // 端口号
     proxy: {
       '/api': {
-        target: 'http://152.136.185.210:8000',  // 要跨域的域名
+        target: '应coderwhy老师要求,接口地址不随意泄露,需要的朋友请找老师获取',  // 要跨域的域名
         changeOrigin: true,  // 是否开启跨域
       }
     }
