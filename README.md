@@ -1,4 +1,4 @@
-# vuemall
+# Vuemall
 
 ## Project setup
 ```
@@ -23,3 +23,7 @@ npm run build
 项目分为四大模块：首页、分类、购物车、个人中心，部分截图如下：
 
 <img src="https://raw.githubusercontent.com/Withyooou/img-folder/main/VueMall1.png" width="25%"/><img src="https://raw.githubusercontent.com/Withyooou/img-folder/main/VueMall2.png" width="25%"/><img src="https://raw.githubusercontent.com/Withyooou/img-folder/main/VueMall3.png" width="25%"/><img src="https://raw.githubusercontent.com/Withyooou/img-folder/main/VueMall4.png" width="25%"/><img src="https://raw.githubusercontent.com/Withyooou/img-folder/main/VueMall5.png" width="25%"/><img src="https://raw.githubusercontent.com/Withyooou/img-folder/main/VueMall6.png" width="25%"/><img src="https://raw.githubusercontent.com/Withyooou/img-folder/main/VueMall7.png" width="25%"/><img src="https://raw.githubusercontent.com/Withyooou/img-folder/main/VueMall8.png" width="25%"/>
+
+## 项目的使用
+- 将network/request.js中的baseURL改为最新的接口地址
+- 将vue.config.js中的target改为最新的接口地址
