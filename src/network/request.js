@@ -82,7 +82,7 @@ instance.interceptors.request.use(
   },
   // 请求失败
   error => {
-    return Promise.error(error);
+    return Promise.reject(error);
   }
 );
 
